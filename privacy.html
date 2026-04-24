@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy Policy for ProClip Studio.">
+    <title>Privacy Policy | ProClip Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <style>
+        .privacy-content {
+            padding: 120px 20px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        .privacy-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .privacy-content h2 {
+            font-size: 1.8rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            color: #f8fafc;
+        }
+        .privacy-content p {
+            margin-bottom: 15px;
+        }
+        .privacy-content ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        .privacy-content li {
+            margin-bottom: 10px;
+        }
+        .privacy-content strong {
+            color: #fff;
+        }
+        .privacy-content code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .footer-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-links a:hover {
+            color: #818cf8;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-content container">
+            <a href="index.html" class="logo" style="text-decoration: none; color: inherit;">
+                <img src="logo.png" alt="ProClip Studio" class="nav-logo-img">
+                <span>ProClip Studio</span>
+            </a>
+            <div class="nav-actions" style="display: flex; gap: 16px; align-items: center;">
+                <div id="auth-btn-container">
+                    <a href="auth.html" class="nav-btn">Login</a>
+                </div>
+                <a href="index.html#download" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Get App</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="privacy-content">
+        <h1>Privacy Policy for Proclip Studio</h1>
+        <p><strong>Last updated: April 2026</strong></p>
+        <p>Proclip Studio ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how our Chrome Extension collects, uses, and safeguards your information.</p>
+        
+        <h2>1. Information We Collect</h2>
+        <ul>
+            <li><strong>Authentication Data</strong>: We use the <code>identity</code> permission to allow you to log in via Google. We only receive your basic profile information (such as email address) to verify your premium access status. We do not store your passwords.</li>
+            <li><strong>Link Data</strong>: Our extension collects publicly visible URLs of videos from YouTube, TikTok, Instagram, and Facebook while you browse, but <strong>only when you explicitly activate the collection process</strong>. This data is processed locally on your device and only sent to a Google Form when you actively initiate the submission.</li>
+        </ul>
+        
+        <h2>2. Permissions We Request</h2>
+        <ul>
+            <li><strong>Identity</strong>: Required to authenticate users and manage access to premium features securely.</li>
+            <li><strong>Storage</strong>: Used to save your local settings, such as which platforms are enabled for link collection.</li>
+            <li><strong>Content Scripts</strong>: Used to read public video links on the supported platforms when you initiate the process.</li>
+            <li><strong>Host Permissions</strong>: Limited only to the platforms you collect links from (YouTube, TikTok, Facebook, Instagram) and Google Forms (for you to submit your collected links).</li>
+        </ul>
+        
+        <h2>3. How We Use Your Information</h2>
+        <ul>
+            <li>To provide the core functionality of collecting video links.</li>
+            <li>To verify your premium access status for continued use of the extension.</li>
+            <li>We do <strong>NOT</strong> sell, rent, or share your data with third parties.</li>
+            <li>We do <strong>NOT</strong> track your overall browsing history. The extension only interacts with the specific supported pages when you command it to.</li>
+        </ul>
+        
+        <h2>4. Data Security</h2>
+        <p>We use industry-standard security measures (Firebase Authentication) to secure your login status. The collected links are processed temporarily and are not stored permanently on any external servers managed by us.</p>
+        
+        <h2>5. Contact Us</h2>
+        <p>If you have any questions about this Privacy Policy, please contact us via the Chrome Web Store support page or at our developer contact email.</p>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <img src="logo.png" alt="ProClip Studio" class="footer-logo-img">
+                <span>ProClip Studio</span>
+            </div>
+            <div class="footer-links" style="margin: 15px 0;">
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+            <p>&copy; 2026 ProClip Studio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
