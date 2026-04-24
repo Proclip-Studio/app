@@ -35,8 +35,9 @@ const refreshBtn = document.getElementById('refresh-btn');
 // Stats Elements
 const statTotalUsers = document.getElementById('stat-total-users');
 const statActiveUsers = document.getElementById('stat-active-users');
-const statPremiumUsers = document.getElementById('stat-premium-users');
+const statTotalPremiumUsers = document.getElementById('stat-premium-users');
 const statTotalExports = document.getElementById('stat-total-exports');
+const statTotalUploads = document.getElementById('stat-total-uploads');
 
 // Modal Elements
 const editModal = document.getElementById('edit-modal');
@@ -81,6 +82,7 @@ async function loadData() {
         const querySnapshot = await getDocs(collection(db, "users"));
         allUsers = [];
         let totalExports = 0;
+        let totalUploads = 0;
         let premiumCount = 0;
         let activeCount = 0;
 
@@ -90,6 +92,7 @@ async function loadData() {
             allUsers.push(data);
 
             totalExports += (data.clipsExported || data.exportedClipsCount || 0);
+            totalUploads += (data.clipsUploaded || data.uploadedClipsCount || 0);
             if (data.isActive !== false) activeCount++;
             
             const status = (data.subscriptionStatus || 'free').toLowerCase();
@@ -99,8 +102,9 @@ async function loadData() {
         // Update Stats
         statTotalUsers.innerText = allUsers.length;
         statActiveUsers.innerText = activeCount;
-        statPremiumUsers.innerText = premiumCount;
+        statTotalPremiumUsers.innerText = premiumCount;
         statTotalExports.innerText = totalExports;
+        statTotalUploads.innerText = totalUploads;
 
         renderTable(allUsers);
     } catch (e) {
@@ -114,7 +118,7 @@ async function loadData() {
 function renderTable(users) {
     usersTableBody.innerHTML = '';
     if (users.length === 0) {
-        usersTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No users found.</td></tr>';
+        usersTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No users found.</td></tr>';
         return;
     }
 
@@ -127,6 +131,7 @@ function renderTable(users) {
         const activeClass = user.isActive === false ? 'blocked' : 'active';
         
         const exports = user.clipsExported || user.exportedClipsCount || 0;
+        const uploads = user.clipsUploaded || user.uploadedClipsCount || 0;
         
         let dateJoined = 'N/A';
         if (user.createdAt) {
@@ -143,6 +148,7 @@ function renderTable(users) {
             <td><span class="badge ${planClass}">${subStatus}</span></td>
             <td><span class="badge ${activeClass}">${user.isActive === false ? 'Blocked' : 'Active'}</span></td>
             <td>${exports}</td>
+            <td>${uploads}</td>
             <td>${dateJoined}</td>
         `;
         
