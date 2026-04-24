@@ -1,338 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Proclip Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>Login | ProClip Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Admin specific styles */
-        .admin-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1);
-            border-color: rgba(0, 229, 255, 0.3);
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 4px; height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--secondary));
-        }
-        .stat-icon {
-            position: absolute;
-            top: 24px; right: 24px;
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.1);
-        }
-        .stat-card h3 {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        .stat-card .value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            font-family: var(--font-heading);
-            color: #fff;
-            margin-bottom: 0;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-        
-        .admin-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 16px;
-        }
-        .search-box {
-            flex: 1;
-            max-width: 400px;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-        th, td {
-            padding: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.9rem;
-        }
-        th {
-            color: var(--text-muted);
-            font-weight: 600;
-            background: rgba(0, 0, 0, 0.2);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-        tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-            cursor: pointer;
-        }
-        
-        /* Badges */
-        .badge {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .badge.admin { background: rgba(0, 229, 255, 0.1); color: var(--primary); }
-        .badge.user { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
-        .badge.premium { background: rgba(255, 215, 0, 0.1); color: #ffd700; }
-        .badge.free { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
-        .badge.active { background: rgba(46, 213, 115, 0.1); color: #2ed573; }
-        .badge.blocked { background: rgba(255, 71, 87, 0.1); color: #ff4757; }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: var(--bg-dark);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        .close-btn:hover { color: #fff; }
-        
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .form-group.full { grid-column: 1 / -1; }
-        
-        .danger-zone {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 71, 87, 0.2);
-        }
-        .danger-zone h4 {
-            color: #ff4757;
-            margin-bottom: 12px;
-        }
-        
-        .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
-        .btn-danger { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.2); }
-        .btn-danger:hover { background: rgba(255, 71, 87, 0.2); }
-        .btn-warning { background: rgba(255, 165, 2, 0.1); color: #ffa502; border: 1px solid rgba(255, 165, 2, 0.2); }
-        .btn-warning:hover { background: rgba(255, 165, 2, 0.2); }
-        
-        #loading-overlay {
-            z-index: 2000;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
 </head>
-<body>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,14,21,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:2000;">
+<body>
+    <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-content container">
-            <a href="dashboard.html" class="logo" style="text-decoration: none;">
-                <img src="logo.png" alt="Proclip Studio" class="nav-logo-img">
-                Proclip Studio <span style="font-size: 0.7rem; color: var(--primary); margin-left: 8px; border: 1px solid var(--primary); padding: 2px 8px; border-radius: 20px; font-weight: 700;">ADMIN</span>
-            </a>
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <a href="dashboard.html" class="nav-btn" style="color: var(--text-muted); border-color: var(--border-color);">User Dashboard</a>
-                <button id="logout-btn" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Sign Out</button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="dashboard-container" style="max-width: 1200px;">
-        <header class="dashboard-header">
-            <div>
-                <h1 style="margin-bottom: 8px;">Admin Panel</h1>
-                <p style="color: var(--text-muted);">Manage users, subscriptions, and security.</p>
-            </div>
-        </header>
-
-        <!-- Stats Grid -->
-        <div class="admin-stats-grid">
-            <div class="stat-card">
-                <i class="fa-solid fa-users stat-icon"></i>
-                <h3>Total Users</h3>
-                <div class="value" id="stat-total-users">-</div>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-user-check stat-icon"></i>
-                <h3>Active Users</h3>
-                <div class="value" id="stat-active-users">-</div>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-crown stat-icon" style="color: rgba(255, 215, 0, 0.2);"></i>
-                <h3>Premium Users</h3>
-                <div class="value" id="stat-premium-users">-</div>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-download stat-icon"></i>
-                <h3>Clips Exported</h3>
-                <div class="value" id="stat-total-exports">-</div>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-upload stat-icon"></i>
-                <h3>Clips Uploaded</h3>
-                <div class="value" id="stat-total-uploads">-</div>
-            </div>
+    <div class="auth-container">
+        <div class="hero-bg">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
         </div>
 
-        <!-- Toolbar -->
-        <div class="admin-toolbar">
-            <div class="search-box input-group" style="margin: 0;">
-                <input type="text" id="search-input" class="form-input" placeholder="Search by email or name...">
-            </div>
-            <button id="refresh-btn" class="btn btn-secondary">Refresh Data</button>
-        </div>
-
-        <!-- Users Table -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Role</th>
-                        <th>Plan</th>
-                        <th>Status</th>
-                        <th>Exports</th>
-                        <th>Uploads</th>
-                        <th>Joined</th>
-                    </tr>
-                </thead>
-                <tbody id="users-table-body">
-                    <tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading users...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </main>
-
-    <!-- Edit User Modal -->
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modal-user-name">Edit User</h2>
-                <button class="close-btn" id="close-modal">&times;</button>
-            </div>
-            
-            <input type="hidden" id="edit-uid">
-            
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Role</label>
-                    <select id="edit-role" class="form-input">
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Account Status</label>
-                    <select id="edit-is-active" class="form-input">
-                        <option value="true">Active</option>
-                        <option value="false">Blocked</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Subscription</label>
-                    <select id="edit-sub-status" class="form-input">
-                        <option value="free">Free</option>
-                        <option value="premium">Premium</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Plan Type</label>
-                    <select id="edit-plan" class="form-input">
-                        <option value="">None</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
-                
-                <div class="form-group full">
-                    <label>Expiration Date (Leave blank for infinite)</label>
-                    <input type="date" id="edit-expiry" class="form-input">
-                </div>
+        <div class="auth-card glass reveal active">
+            <div class="auth-header">
+                <a href="index.html" style="text-decoration: none; display: inline-block; margin-bottom: 20px;">
+                    <div class="logo">
+                        <img src="logo.png" alt="ProClip Studio" class="nav-logo-img">
+                        <span>ProClip Studio</span>
+                    </div>
+                </a>
+                <h2 id="auth-title">Welcome Back</h2>
+                <p id="auth-subtitle">Log in to manage your clips and subscription.</p>
             </div>
 
-            <button id="save-user-btn" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+            <div id="error-msg" class="error-message" style="display: none;"></div>
 
-            <div class="danger-zone">
-                <h4>Security Actions</h4>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <button id="reset-android-btn" class="btn btn-warning btn-sm">Reset Android Device Binding</button>
-                    <button id="reset-extension-btn" class="btn btn-warning btn-sm">Reset Extension Device Binding</button>
-                    <button id="delete-user-btn" class="btn btn-danger btn-sm" style="margin-top: 10px;">Delete Account</button>
+            <form id="auth-form">
+                <div class="form-group" id="name-group" style="display: none;">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name">
                 </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary auth-btn" id="submit-btn">Sign In</button>
+            </form>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <button class="google-btn" id="google-login">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                Continue with Google
+            </button>
+
+            <div class="auth-footer">
+                <span id="toggle-text">Don't have an account?</span>
+                <a href="signup.html" id="auth-toggle">Sign Up</a>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script type="module" src="admin.js"></script>
+    <script type="module" src="auth.js"></script>
 </body>
+
 </html>
