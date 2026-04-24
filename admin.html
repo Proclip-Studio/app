@@ -22,6 +22,7 @@
             --danger: #ff4757;
             --warning: #ffa502;
             --gold: #ffd700;
+            color-scheme: dark;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -218,6 +219,18 @@
             display: flex; align-items: center; gap: 6px;
         }
         .refresh-btn:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
+        
+        /* Dropdown specific fixes */
+        select {
+            display: block;
+            appearance: auto;
+            -webkit-appearance: auto;
+            background-color: #1a1b26; /* Darker background for select */
+        }
+        select option {
+            background-color: #1a1b26;
+            color: #fff;
+        }
 
         /* ====================== TABLE ====================== */
         .table-wrap {
