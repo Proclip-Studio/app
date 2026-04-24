@@ -28,12 +28,17 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Server Configuration Error: Firebase environment variables are missing in Vercel. Please check your Vercel Dashboard.' });
       }
 
+      let rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
+      // Remove wrapping quotes if the user accidentally pasted them into Vercel
+      rawKey = rawKey.replace(/^"|"$/g, '');
+      // Ensure escaped newlines are converted to real newlines
+      const parsedKey = rawKey.replace(/\\n/g, '\n');
+
       admin.initializeApp({
         credential: admin.credential.cert({
           projectId: process.env.FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-          // Replace literal \n with actual newlines for the private key
-          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+          privateKey: parsedKey,
         }),
       });
     }
