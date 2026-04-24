@@ -194,7 +194,7 @@ function openEditModal(user) {
         document.getElementById('edit-expiry').value = '';
     }
 
-    editModal.classList.add('active');
+    editModal.classList.add('open');
 }
 
 closeModalBtn.addEventListener('click', () => {
@@ -264,7 +264,7 @@ deleteUserBtn.addEventListener('click', async () => {
         try {
             await deleteDoc(doc(db, "users", uid));
             alert("User deleted from Firestore.");
-            editModal.classList.remove('active');
+            editModal.classList.remove('open');
             loadData();
         } catch (e) { alert("Failed to delete user."); }
     }
