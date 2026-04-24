@@ -546,18 +546,18 @@
                 </div>
                 <div class="form-col">
                     <label>Subscription</label>
-                    <select id="edit-sub-status" class="form-select">
+                    <select id="edit-sub-status" class="form-select" onchange="handleSubChange(this.value)">
                         <option value="free">Free</option>
                         <option value="premium">Premium</option>
                     </select>
                 </div>
-                <div class="form-col">
+                <div class="form-col" id="plan-type-col">
                     <label>Plan Type</label>
-                    <select id="edit-plan" class="form-select">
+                    <select id="edit-plan" class="form-select" onchange="handlePlanChange(this.value)">
                         <option value="">None</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
+                        <option value="weekly">Weekly (+7 days)</option>
+                        <option value="monthly">Monthly (+30 days)</option>
+                        <option value="yearly">Yearly (+365 days)</option>
                     </select>
                 </div>
                 <div class="form-col full">
