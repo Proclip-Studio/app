@@ -30,6 +30,8 @@ const db = getFirestore(app);
 const loadingOverlay = document.getElementById('loading-overlay');
 const usersTableBody = document.getElementById('users-table-body');
 const searchInput = document.getElementById('search-input');
+const filterPlan = document.getElementById('filter-plan');
+const filterStatus = document.getElementById('filter-status');
 const refreshBtn = document.getElementById('refresh-btn');
 
 // Stats Elements
@@ -106,7 +108,7 @@ async function loadData() {
         if (statTotalExports) statTotalExports.innerText = totalExports;
         if (statTotalUploads) statTotalUploads.innerText = totalUploads;
 
-        renderTable(allUsers);
+        applyFilters();
     } catch (e) {
         console.error("Error fetching users:", e);
         let msg = "Failed to load users.";
@@ -175,15 +177,35 @@ function renderTable(users) {
     });
 }
 
-// Search Functionality
-searchInput.addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = allUsers.filter(u => 
-        (u.email && u.email.toLowerCase().includes(term)) || 
-        (u.displayName && u.displayName.toLowerCase().includes(term))
-    );
+// Filter Logic
+function applyFilters() {
+    const term = searchInput.value.toLowerCase();
+    const plan = filterPlan.value;
+    const status = filterStatus.value;
+
+    const filtered = allUsers.filter(u => {
+        // Search Term
+        const matchesSearch = (u.email && u.email.toLowerCase().includes(term)) || 
+                             (u.displayName && u.displayName.toLowerCase().includes(term));
+        
+        // Plan Filter
+        const userPlan = (u.subscriptionStatus || 'free').toLowerCase();
+        const resolvedPlan = (userPlan === 'premium' || userPlan === 'active') ? 'premium' : 'free';
+        const matchesPlan = plan === 'all' || resolvedPlan === plan;
+        
+        // Status Filter
+        const userStatus = u.isActive === false ? 'blocked' : 'active';
+        const matchesStatus = status === 'all' || userStatus === status;
+
+        return matchesSearch && matchesPlan && matchesStatus;
+    });
+
     renderTable(filtered);
-});
+}
+
+searchInput.addEventListener('input', applyFilters);
+filterPlan.addEventListener('change', applyFilters);
+filterStatus.addEventListener('change', applyFilters);
 
 refreshBtn.addEventListener('click', loadData);
 
