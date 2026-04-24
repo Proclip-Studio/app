@@ -807,3 +807,11 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
+/* Admin Panel Button — hidden by default, shown via JS for admins only */
+.admin-btn-hidden {
+    display: none !important;
+}
+.admin-btn-visible {
+    display: flex !important;
+}
