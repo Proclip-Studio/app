@@ -136,14 +136,14 @@ function applyUserData(data, user) {
         uploadedCountEl.innerText = data.clipsUploaded || data.uploadedClipsCount || 0;
     }
 
-    if (data.subscriptionExpiry) {
+    if (data.subscriptionEndDate) {
         let endDate;
-        if (typeof data.subscriptionExpiry.toDate === 'function') {
-            endDate = data.subscriptionExpiry.toDate();
-        } else if (data.subscriptionExpiry.seconds) {
-            endDate = new Date(data.subscriptionExpiry.seconds * 1000);
+        if (typeof data.subscriptionEndDate.toDate === 'function') {
+            endDate = data.subscriptionEndDate.toDate();
+        } else if (data.subscriptionEndDate.seconds) {
+            endDate = new Date(data.subscriptionEndDate.seconds * 1000);
         } else {
-            endDate = new Date(data.subscriptionExpiry);
+            endDate = new Date(data.subscriptionEndDate);
         }
 
         const now = new Date();

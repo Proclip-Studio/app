@@ -149,8 +149,8 @@ function renderTable(users) {
         }
 
         let expiryDisplay = '<span style="color: var(--muted); font-size: 0.8rem;">N/A</span>';
-        if (user.subscriptionExpiry) {
-            const expDate = user.subscriptionExpiry.toDate ? user.subscriptionExpiry.toDate() : new Date(user.subscriptionExpiry);
+        if (user.subscriptionEndDate) {
+            const expDate = user.subscriptionEndDate.toDate ? user.subscriptionEndDate.toDate() : new Date(user.subscriptionEndDate);
             const isExpired = expDate < new Date();
             const formatted = expDate.toLocaleDateString();
             expiryDisplay = isExpired
@@ -258,8 +258,8 @@ function openEditModal(user) {
     document.getElementById('edit-sub-status').value = resolvedSub;
     document.getElementById('edit-plan').value = user.subscriptionPlan || user.plan || '';
 
-    if (user.subscriptionExpiry) {
-        const d = user.subscriptionExpiry.toDate ? user.subscriptionExpiry.toDate() : new Date(user.subscriptionExpiry);
+    if (user.subscriptionEndDate) {
+        const d = user.subscriptionEndDate.toDate ? user.subscriptionEndDate.toDate() : new Date(user.subscriptionEndDate);
         document.getElementById('edit-expiry').value = d.toISOString().split('T')[0];
         adminOverrideDateSet = true; // existing date is treated as admin override
     } else {
@@ -295,9 +295,9 @@ saveUserBtn.addEventListener('click', async () => {
         };
 
         if (expiryStr) {
-            updates.subscriptionExpiry = Timestamp.fromDate(new Date(expiryStr));
+            updates.subscriptionEndDate = Timestamp.fromDate(new Date(expiryStr));
         } else {
-            updates.subscriptionExpiry = null;
+            updates.subscriptionEndDate = null;
         }
 
         await updateDoc(doc(db, "users", uid), updates);

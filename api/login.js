@@ -58,7 +58,7 @@ export default async function handler(req, res) {
 
   // 1. Validate Origin (Security)
   // Set ALLOWED_EXTENSION_ID in Vercel Environment Variables.
-  const allowedOriginId = process.env.ALLOWED_EXTENSION_ID; 
+  const allowedOriginId = process.env.ALLOWED_EXTENSION_ID;
   if (allowedOriginId) {
     const allowedOrigin = `chrome-extension://${allowedOriginId}`;
     if (req.headers.origin && req.headers.origin !== allowedOrigin) {
@@ -72,7 +72,7 @@ export default async function handler(req, res) {
     if (!agentId) {
       return res.status(400).json({ error: 'Missing agentId' });
     }
-    
+
     if (!token && (!bodyEmail || !password)) {
       return res.status(400).json({ error: 'Missing authentication credentials (token or email/password)' });
     }
@@ -105,15 +105,15 @@ export default async function handler(req, res) {
     } else if (bodyEmail && password) {
       // 2B. Verify Email/Password via Firebase Identity Toolkit REST API
       const apiKey = process.env.FIREBASE_API_KEY || "AIzaSyBeqI9Quekbx_m6l6tQUSyGF6iKC-ixaJI";
-      
+
       const identityRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: bodyEmail, password, returnSecureToken: true })
       });
-      
+
       const identityData = await identityRes.json();
-      
+
       if (!identityRes.ok) {
         let msg = 'Authentication failed';
         if (identityData.error && identityData.error.message) {
@@ -121,7 +121,7 @@ export default async function handler(req, res) {
         }
         return res.status(401).json({ error: msg });
       }
-      
+
       userEmail = identityData.email;
       // We return the real ID token so the extension can use it for refreshing
       returnToken = identityData.idToken;
@@ -136,25 +136,25 @@ export default async function handler(req, res) {
     const snapshot = await usersRef.where('email', '==', userEmail).limit(1).get();
 
     if (snapshot.empty) {
-       return res.status(403).json({ allowed: false, reason: 'Account not found. Please register via the Android or Web App first.' });
+      return res.status(403).json({ allowed: false, reason: 'Account not found. Please register via the Android or Web App first.' });
     }
 
     const userDoc = snapshot.docs[0];
     const data = userDoc.data();
-    
+
     // 4. Premium Check
     const status = (data.subscriptionStatus || 'free').toLowerCase();
-    
+
     let isPremium = false;
     if (status === 'premium' || status === 'active') {
-        const expiry = data.subscriptionExpiry;
-        if (expiry) {
-            if (expiry.toDate() > new Date()) {
-                isPremium = true;
-            }
-        } else {
-            isPremium = true;
+      const expiry = data.subscriptionEndDate;
+      if (expiry) {
+        if (expiry.toDate() > new Date()) {
+          isPremium = true;
         }
+      } else {
+        isPremium = true;
+      }
     }
 
     // 5. Device Restriction (Extension Agent ID)
@@ -164,11 +164,11 @@ export default async function handler(req, res) {
         extensionSession: { deviceId: agentId, lastLogin: admin.firestore.FieldValue.serverTimestamp() }
       }, { merge: true });
 
-      return res.status(200).json({ 
-        allowed: true, 
-        isPremium, 
+      return res.status(200).json({
+        allowed: true,
+        isPremium,
         token: returnToken,
-        message: 'Device bound successfully.' 
+        message: 'Device bound successfully.'
       });
     }
 
@@ -178,11 +178,11 @@ export default async function handler(req, res) {
         extensionSession: { lastLogin: admin.firestore.FieldValue.serverTimestamp() }
       }, { merge: true });
 
-      return res.status(200).json({ 
-        allowed: true, 
-        isPremium, 
+      return res.status(200).json({
+        allowed: true,
+        isPremium,
         token: returnToken,
-        message: 'Login successful.' 
+        message: 'Login successful.'
       });
     }
 

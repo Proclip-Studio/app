@@ -134,8 +134,8 @@ async function initializeUserData(user) {
         exportedClipsCount: 0,
         currentPlan: "free",
         subscriptionActivatedByAdmin: false,
-        subscriptionExpiry: null,
-        subscriptionExpiry: null,
+        subscriptionEndDate: null,
+        subscriptionEndDate: null,
         createdAt: serverTimestamp(),
         lastLogin: serverTimestamp()
     }, { merge: true });
