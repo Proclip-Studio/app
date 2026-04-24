@@ -1,0 +1,13 @@
+{
+  "name": "proclip-studio-backend",
+  "version": "1.0.0",
+  "description": "Vercel backend for Proclip Studio Extension",
+  "main": "api/login.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "firebase-admin": "^12.0.0"
+  }
+}

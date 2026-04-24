@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ProClip Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
+</head>
+
+<body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-content container">
+            <a href="index.html" style="text-decoration: none;">
+                <div class="logo">
+                    <img src="logo.png" alt="ProClip Studio" class="nav-logo-img">
+                    <span>ProClip Studio</span>
+                </div>
+            </a>
+            <button id="logout-btn" class="nav-btn" style="background: transparent; cursor: pointer;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="hero-bg">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+        </div>
+
+        <div class="dashboard-grid">
+            <aside class="profile-card glass reveal active">
+                <div id="avatar-container">
+                    <!-- Avatar or Photo injected by JS -->
+                </div>
+                <h2 id="user-name" class="profile-name">Loading...</h2>
+                <p id="user-email" class="profile-email">...</p>
+                <div class="uid-container" style="font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; opacity: 0.7;">
+                    ID: <span id="user-uid">...</span>
+                </div>
+                <div id="user-plan-badge" class="current-plan-badge">Free Plan</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div id="clips-count" class="stat-value">0</div>
+                        <div class="stat-label">Clips Exported</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="clips-uploaded" class="stat-value">0</div>
+                        <div class="stat-label">Clips Uploaded</div>
+                    </div>
+                    <div class="stat-card" style="grid-column: span 2;">
+                        <div id="expiry-days" class="stat-value">-</div>
+                        <div class="stat-label">Days Left</div>
+                    </div>
+                </div>
+            </aside>
+
+            <main>
+                <section class="dashboard-section glass reveal active">
+                    <h3 class="section-title"><i class="fa-solid fa-gem"></i> Subscription Plans</h3>
+                    <div id="pricing-container" class="pricing-grid">
+                        <!-- Pricing cards will be injected here -->
+                        <div class="pricing-card">
+                            <div class="plan-name">Loading Pricing...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="dashboard-section glass reveal active">
+                    <h3 class="section-title"><i class="fa-solid fa-circle-info"></i> Account Status</h3>
+                    <p id="status-text" style="color: var(--text-muted); line-height: 1.8;">
+                        Your account is currently active. Your subscription is managed by the ProClip Studio team.
+                    </p>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script type="module" src="dashboard.js"></script>
+</body>
+
+</html>
