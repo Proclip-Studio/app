@@ -1,21 +1,6 @@
 import Cors from 'cors';
 import admin from 'firebase-admin';
 
-// Initialize Firebase Admin (Only once)
-if (!admin.apps.length) {
-  // Use environment variables provided by Vercel
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      // Replace literal \n with actual newlines for the private key
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
-}
-
-const db = admin.firestore();
-
 // Initialize CORS middleware
 const cors = Cors({ methods: ['POST', 'OPTIONS'] });
 
@@ -35,6 +20,29 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
+
+  try {
+    // Initialize Firebase Admin (Only once)
+    if (!admin.apps.length) {
+      if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_PRIVATE_KEY) {
+        return res.status(500).json({ error: 'Server Configuration Error: Firebase environment variables are missing in Vercel. Please check your Vercel Dashboard.' });
+      }
+
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          // Replace literal \n with actual newlines for the private key
+          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        }),
+      });
+    }
+  } catch (initError) {
+    console.error('Firebase Init Error:', initError);
+    return res.status(500).json({ error: `Server Configuration Error: ${initError.message}` });
+  }
+
+  const db = admin.firestore();
 
   // 1. Validate Origin (Security)
   // Set ALLOWED_EXTENSION_ID in Vercel Environment Variables.
