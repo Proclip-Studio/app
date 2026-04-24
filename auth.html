@@ -183,20 +183,20 @@
 <body>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="loading-overlay">
-        <div class="loader"></div>
+    <div id="loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,14,21,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:2000;">
+        <div class="spinner"></div>
     </div>
 
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="dashboard.html" class="logo">
-                <img src="logo.png" alt="Proclip Studio" class="logo-img">
-                Proclip Studio <span style="font-size: 0.7rem; color: var(--primary); margin-left: 8px; border: 1px solid var(--primary); padding: 2px 6px; border-radius: 4px;">ADMIN</span>
+        <div class="nav-content container">
+            <a href="dashboard.html" class="logo" style="text-decoration: none;">
+                <img src="logo.png" alt="Proclip Studio" class="nav-logo-img">
+                Proclip Studio <span style="font-size: 0.7rem; color: var(--primary); margin-left: 8px; border: 1px solid var(--primary); padding: 2px 8px; border-radius: 20px; font-weight: 700;">ADMIN</span>
             </a>
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link">User Dashboard</a>
-                <button id="logout-btn" class="btn btn-primary" style="padding: 8px 16px;">Sign Out</button>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <a href="dashboard.html" class="nav-btn" style="color: var(--text-muted); border-color: var(--border-color);">User Dashboard</a>
+                <button id="logout-btn" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Sign Out</button>
             </div>
         </div>
     </nav>
