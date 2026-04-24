@@ -1,30 +1,30 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-    getAuth, 
+import {
+    getAuth,
     GoogleAuthProvider,
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword, 
-    signInWithPopup, 
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signInWithPopup,
     onAuthStateChanged,
-    updateProfile 
+    updateProfile
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { 
+import {
     getFirestore,
-    doc, 
-    setDoc, 
+    doc,
+    setDoc,
     getDoc,
-    serverTimestamp 
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBeqI9Quekbx_m6l6tQUSyGF6iKC-ixaJI",
-  authDomain: "proclip-studio.firebaseapp.com",
-  projectId: "proclip-studio",
-  storageBucket: "proclip-studio.firebasestorage.app",
-  messagingSenderId: "18246462392",
-  appId: "1:18246462392:web:1a9ebb1362c29e78873d4d",
-  measurementId: "G-VP1ZJPZSWL"
+    apiKey: "AIzaSyBeqI9Quekbx_m6l6tQUSyGF6iKC-ixaJI",
+    authDomain: "proclip-studio.firebaseapp.com",
+    projectId: "proclip-studio",
+    storageBucket: "proclip-studio.firebasestorage.app",
+    messagingSenderId: "18246462392",
+    appId: "1:18246462392:web:1a9ebb1362c29e78873d4d",
+    measurementId: "G-VP1ZJPZSWL"
 };
 
 // Initialize Firebase
@@ -134,7 +134,7 @@ async function initializeUserData(user) {
         exportedClipsCount: 0,
         currentPlan: "free",
         subscriptionActivatedByAdmin: false,
-        subscriptionEndDate: null,
+        subscriptionExpiry: null,
         subscriptionExpiry: null,
         createdAt: serverTimestamp(),
         lastLogin: serverTimestamp()

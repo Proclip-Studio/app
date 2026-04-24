@@ -96,7 +96,7 @@ async function loadData() {
             totalExports += (data.clipsExported || data.exportedClipsCount || 0);
             totalUploads += (data.clipsUploaded || data.uploadedClipsCount || 0);
             if (data.isActive !== false) activeCount++;
-            
+
             const status = (data.subscriptionStatus || 'free').toLowerCase();
             if (status === 'premium' || status === 'active') premiumCount++;
         });
@@ -133,15 +133,15 @@ function renderTable(users) {
 
     users.forEach(user => {
         const tr = document.createElement('tr');
-        
+
         const roleClass = user.role === 'admin' ? 'admin' : 'user';
         const subStatus = (user.subscriptionStatus || 'free').toLowerCase();
         const planClass = (subStatus === 'premium' || subStatus === 'active') ? 'premium' : 'free';
         const activeClass = user.isActive === false ? 'blocked' : 'active';
-        
+
         const exports = user.clipsExported || user.exportedClipsCount || 0;
         const uploads = user.clipsUploaded || user.uploadedClipsCount || 0;
-        
+
         let dateJoined = 'N/A';
         if (user.createdAt) {
             const d = user.createdAt.toDate ? user.createdAt.toDate() : new Date(user.createdAt);
@@ -149,8 +149,8 @@ function renderTable(users) {
         }
 
         let expiryDisplay = '<span style="color: var(--muted); font-size: 0.8rem;">N/A</span>';
-        if (user.subscriptionEndDate) {
-            const expDate = user.subscriptionEndDate.toDate ? user.subscriptionEndDate.toDate() : new Date(user.subscriptionEndDate);
+        if (user.subscriptionExpiry) {
+            const expDate = user.subscriptionExpiry.toDate ? user.subscriptionExpiry.toDate() : new Date(user.subscriptionExpiry);
             const isExpired = expDate < new Date();
             const formatted = expDate.toLocaleDateString();
             expiryDisplay = isExpired
@@ -171,7 +171,7 @@ function renderTable(users) {
             <td>${expiryDisplay}</td>
             <td>${dateJoined}</td>
         `;
-        
+
         tr.onclick = () => openEditModal(user);
         usersTableBody.appendChild(tr);
     });
@@ -185,14 +185,14 @@ function applyFilters() {
 
     const filtered = allUsers.filter(u => {
         // Search Term
-        const matchesSearch = (u.email && u.email.toLowerCase().includes(term)) || 
-                             (u.displayName && u.displayName.toLowerCase().includes(term));
-        
+        const matchesSearch = (u.email && u.email.toLowerCase().includes(term)) ||
+            (u.displayName && u.displayName.toLowerCase().includes(term));
+
         // Plan Filter
         const userPlan = (u.subscriptionStatus || 'free').toLowerCase();
         const resolvedPlan = (userPlan === 'premium' || userPlan === 'active') ? 'premium' : 'free';
         const matchesPlan = plan === 'all' || resolvedPlan === plan;
-        
+
         // Status Filter
         const userStatus = u.isActive === false ? 'blocked' : 'active';
         const matchesStatus = status === 'all' || userStatus === status;
@@ -252,14 +252,14 @@ function openEditModal(user) {
     document.getElementById('edit-uid').value = user.id;
     document.getElementById('edit-role').value = user.role || 'user';
     document.getElementById('edit-is-active').value = user.isActive === false ? 'false' : 'true';
-    
+
     const subStatus = (user.subscriptionStatus || 'free').toLowerCase();
     const resolvedSub = (subStatus === 'premium' || subStatus === 'active') ? 'premium' : 'free';
     document.getElementById('edit-sub-status').value = resolvedSub;
     document.getElementById('edit-plan').value = user.subscriptionPlan || user.plan || '';
-    
-    if (user.subscriptionEndDate) {
-        const d = user.subscriptionEndDate.toDate ? user.subscriptionEndDate.toDate() : new Date(user.subscriptionEndDate);
+
+    if (user.subscriptionExpiry) {
+        const d = user.subscriptionExpiry.toDate ? user.subscriptionExpiry.toDate() : new Date(user.subscriptionExpiry);
         document.getElementById('edit-expiry').value = d.toISOString().split('T')[0];
         adminOverrideDateSet = true; // existing date is treated as admin override
     } else {
@@ -284,7 +284,7 @@ saveUserBtn.addEventListener('click', async () => {
     const subStatus = document.getElementById('edit-sub-status').value;
     const plan = document.getElementById('edit-plan').value;
     const expiryStr = document.getElementById('edit-expiry').value;
-    
+
     setLoading(true);
     try {
         const updates = {
@@ -293,11 +293,11 @@ saveUserBtn.addEventListener('click', async () => {
             subscriptionStatus: subStatus,
             subscriptionPlan: plan || null
         };
-        
+
         if (expiryStr) {
-            updates.subscriptionEndDate = Timestamp.fromDate(new Date(expiryStr));
+            updates.subscriptionExpiry = Timestamp.fromDate(new Date(expiryStr));
         } else {
-            updates.subscriptionEndDate = null;
+            updates.subscriptionExpiry = null;
         }
 
         await updateDoc(doc(db, "users", uid), updates);
