@@ -44,7 +44,7 @@ onAuthStateChanged(auth, (user) => {
                 const data = docSnap.data();
                 if (data.role === 'admin') {
                     const adminBtn = document.getElementById('admin-panel-btn');
-                    if (adminBtn) adminBtn.style.display = 'inline-block';
+                    if (adminBtn) adminBtn.style.display = 'flex';
                 }
                 applyUserData(data, user);
                 loadPricing(user, data); // Pass data directly to avoid duplicate reads
