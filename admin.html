@@ -491,9 +491,21 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="search-input" class="search-input" placeholder="Search by name or email...">
             </div>
-            <button id="refresh-btn" class="refresh-btn">
-                <i class="fa-solid fa-rotate-right"></i> Refresh
-            </button>
+            <div style="display: flex; gap: 8px;">
+                <select id="filter-plan" class="refresh-btn" style="cursor: pointer;">
+                    <option value="all">All Plans</option>
+                    <option value="free">Free</option>
+                    <option value="premium">Premium</option>
+                </select>
+                <select id="filter-status" class="refresh-btn" style="cursor: pointer;">
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="blocked">Blocked</option>
+                </select>
+                <button id="refresh-btn" class="refresh-btn">
+                    <i class="fa-solid fa-rotate-right"></i> Refresh
+                </button>
+            </div>
         </div>
 
         <!-- Table -->
@@ -512,7 +524,7 @@
                     </tr>
                 </thead>
                 <tbody id="users-table-body">
-                    <tr><td colspan="7" style="text-align:center; padding: 48px; color: var(--muted);">
+                    <tr><td colspan="8" style="text-align:center; padding: 48px; color: var(--muted);">
                         <i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 8px;"></i> Loading users...
                     </td></tr>
                 </tbody>
