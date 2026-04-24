@@ -109,7 +109,14 @@ async function loadData() {
         renderTable(allUsers);
     } catch (e) {
         console.error("Error fetching users:", e);
-        alert("Failed to load users");
+        let msg = "Failed to load users.";
+        if (e.code === 'permission-denied') {
+            msg = `Firestore Permission Denied.\n\nPlease update your Firestore Security Rules to allow admins to read all users.\n\nGo to Firebase Console → Firestore → Rules and add:\n\nallow read: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';`;
+        } else {
+            msg = `Error: ${e.message || e.code || 'Unknown error'}`;
+        }
+        usersTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: #ff4757; padding: 30px;">${msg.split('\n')[0]}<br><small style="color: var(--text-muted); font-size: 0.8rem;">Check browser console for details.</small></td></tr>`;
+        alert(msg);
     } finally {
         setLoading(false);
     }
