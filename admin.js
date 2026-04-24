@@ -125,7 +125,7 @@ async function loadData() {
 function renderTable(users) {
     usersTableBody.innerHTML = '';
     if (users.length === 0) {
-        usersTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No users found.</td></tr>';
+        usersTableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No users found.</td></tr>';
         return;
     }
 
@@ -146,16 +146,27 @@ function renderTable(users) {
             dateJoined = d.toLocaleDateString();
         }
 
+        let expiryDisplay = '<span style="color: var(--muted); font-size: 0.8rem;">N/A</span>';
+        if (user.subscriptionEndDate) {
+            const expDate = user.subscriptionEndDate.toDate ? user.subscriptionEndDate.toDate() : new Date(user.subscriptionEndDate);
+            const isExpired = expDate < new Date();
+            const formatted = expDate.toLocaleDateString();
+            expiryDisplay = isExpired
+                ? `<span style="color: var(--danger); font-size: 0.82rem;">${formatted} <small>(Expired)</small></span>`
+                : `<span style="color: var(--success); font-size: 0.82rem;">${formatted}</span>`;
+        }
+
         tr.innerHTML = `
             <td>
                 <div style="font-weight: 600;">${user.displayName || 'User'}</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">${user.email}</div>
+                <div style="font-size: 0.8rem; color: var(--muted);">${user.email}</div>
             </td>
-            <td><span class="badge ${roleClass}">${user.role || 'user'}</span></td>
-            <td><span class="badge ${planClass}">${subStatus}</span></td>
-            <td><span class="badge ${activeClass}">${user.isActive === false ? 'Blocked' : 'Active'}</span></td>
+            <td><span class="badge badge-${roleClass}">${user.role || 'user'}</span></td>
+            <td><span class="badge badge-${planClass}">${subStatus}</span></td>
+            <td><span class="badge badge-${activeClass}">${user.isActive === false ? 'Blocked' : 'Active'}</span></td>
             <td>${exports}</td>
             <td>${uploads}</td>
+            <td>${expiryDisplay}</td>
             <td>${dateJoined}</td>
         `;
         
