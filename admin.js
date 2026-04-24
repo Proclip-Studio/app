@@ -176,23 +176,65 @@ searchInput.addEventListener('input', (e) => {
 
 refreshBtn.addEventListener('click', loadData);
 
+// ─── Plan/Sub Helpers ───────────────────────────────────────────
+window.handleSubChange = (value) => {
+    const planCol = document.getElementById('plan-type-col');
+    const planSelect = document.getElementById('edit-plan');
+    const expiryInput = document.getElementById('edit-expiry');
+    if (value === 'free') {
+        if (planCol) planCol.style.display = 'none';
+        if (planSelect) planSelect.value = '';
+        if (expiryInput) expiryInput.value = ''; // clear expiry for free
+    } else {
+        if (planCol) planCol.style.display = 'flex';
+        // Auto-set expiry based on current plan selection
+        if (planSelect && planSelect.value) handlePlanChange(planSelect.value);
+    }
+};
+
+// Track if admin manually changed the date
+let adminOverrideDateSet = false;
+
+window.handlePlanChange = (plan) => {
+    if (adminOverrideDateSet) return; // respect admin's manual date
+    const expiryInput = document.getElementById('edit-expiry');
+    if (!expiryInput || !plan) return;
+    const now = new Date();
+    const days = plan === 'weekly' ? 7 : plan === 'monthly' ? 30 : plan === 'yearly' ? 365 : 0;
+    if (days > 0) {
+        now.setDate(now.getDate() + days);
+        expiryInput.value = now.toISOString().split('T')[0];
+    }
+};
+
+// Detect admin manually editing the date
+document.getElementById('edit-expiry')?.addEventListener('input', () => {
+    adminOverrideDateSet = true;
+});
+
 // Modal Logic
 function openEditModal(user) {
-    document.getElementById('modal-user-name').innerText = `Edit ${user.displayName || user.email}`;
+    adminOverrideDateSet = false; // reset override flag each time modal opens
+    document.getElementById('modal-user-name').innerText = `Edit: ${user.displayName || user.email}`;
     document.getElementById('edit-uid').value = user.id;
     document.getElementById('edit-role').value = user.role || 'user';
     document.getElementById('edit-is-active').value = user.isActive === false ? 'false' : 'true';
     
     const subStatus = (user.subscriptionStatus || 'free').toLowerCase();
-    document.getElementById('edit-sub-status').value = (subStatus === 'premium' || subStatus === 'active') ? 'premium' : 'free';
+    const resolvedSub = (subStatus === 'premium' || subStatus === 'active') ? 'premium' : 'free';
+    document.getElementById('edit-sub-status').value = resolvedSub;
     document.getElementById('edit-plan').value = user.subscriptionPlan || user.plan || '';
     
     if (user.subscriptionEndDate) {
         const d = user.subscriptionEndDate.toDate ? user.subscriptionEndDate.toDate() : new Date(user.subscriptionEndDate);
         document.getElementById('edit-expiry').value = d.toISOString().split('T')[0];
+        adminOverrideDateSet = true; // existing date is treated as admin override
     } else {
         document.getElementById('edit-expiry').value = '';
     }
+
+    // Show or hide plan type based on subscription
+    handleSubChange(resolvedSub);
 
     editModal.classList.add('open');
 }
