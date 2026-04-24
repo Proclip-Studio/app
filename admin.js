@@ -73,7 +73,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 const setLoading = (loading) => {
-    loadingOverlay.style.display = loading ? 'flex' : 'none';
+    if (loadingOverlay) loadingOverlay.style.display = loading ? 'flex' : 'none';
 };
 
 async function loadData() {
@@ -100,11 +100,11 @@ async function loadData() {
         });
 
         // Update Stats
-        statTotalUsers.innerText = allUsers.length;
-        statActiveUsers.innerText = activeCount;
-        statTotalPremiumUsers.innerText = premiumCount;
-        statTotalExports.innerText = totalExports;
-        statTotalUploads.innerText = totalUploads;
+        if (statTotalUsers) statTotalUsers.innerText = allUsers.length;
+        if (statActiveUsers) statActiveUsers.innerText = activeCount;
+        if (statTotalPremiumUsers) statTotalPremiumUsers.innerText = premiumCount;
+        if (statTotalExports) statTotalExports.innerText = totalExports;
+        if (statTotalUploads) statTotalUploads.innerText = totalUploads;
 
         renderTable(allUsers);
     } catch (e) {
