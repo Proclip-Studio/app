@@ -198,7 +198,7 @@ function openEditModal(user) {
 }
 
 closeModalBtn.addEventListener('click', () => {
-    editModal.classList.remove('active');
+    editModal.classList.remove('open');
 });
 
 // Save User
@@ -227,7 +227,7 @@ saveUserBtn.addEventListener('click', async () => {
 
         await updateDoc(doc(db, "users", uid), updates);
         alert("User updated successfully!");
-        editModal.classList.remove('active');
+        editModal.classList.remove('open');
         loadData();
     } catch (e) {
         console.error("Error updating user:", e);
