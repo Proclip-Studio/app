@@ -42,6 +42,10 @@ onAuthStateChanged(auth, (user) => {
         onSnapshot(userDocRef, (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                if (data.role === 'admin') {
+                    const adminBtn = document.getElementById('admin-panel-btn');
+                    if (adminBtn) adminBtn.style.display = 'inline-block';
+                }
                 applyUserData(data, user);
                 loadPricing(user, data); // Pass data directly to avoid duplicate reads
                 setLoading(false);
