@@ -402,9 +402,11 @@ window.initializeSubmitForm = function() {
 
     if (submitBtn) {
         submitBtn.addEventListener('click', async () => {
-            const links = linksArea.value.split('\n').filter(l => l.trim().length > 0);
+            const links = linksArea.value.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
             if (!links.length) return alert("No links to process.");
             if (!resolvedFormResponseUrl) return alert("Please fetch form fields first.");
+
+            console.log(`Starting bulk submission of ${links.length} links to ${resolvedFormResponseUrl}`);
 
             const repeatableField = currentFields.find(f => f.isRepeatable);
             if (!repeatableField) return alert("Please select which field should receive the links.");
@@ -430,6 +432,8 @@ window.initializeSubmitForm = function() {
                         body.append(f.id, value);
                     });
 
+                    console.log(`Submitting link ${i + 1}: ${currentLink}`);
+
                     await fetch(resolvedFormResponseUrl, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -438,7 +442,7 @@ window.initializeSubmitForm = function() {
                     });
                     successCount++;
                 } catch (e) {
-                    console.error("Submission failed", e);
+                    console.error("Submission failed for link " + (i + 1), e);
                 }
 
                 const progress = Math.round(((i + 1) / total) * 100);
