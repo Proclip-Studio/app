@@ -129,6 +129,12 @@ function applyUserData(data, user) {
     userPlanBadge.style.background = (plan === 'free') ? 'rgba(255,255,255,0.05)' : 'rgba(0, 229, 255, 0.1)';
     userPlanBadge.style.color = (plan === 'free') ? 'var(--text-muted)' : 'var(--primary)';
 
+    const submitFormSection = document.getElementById('submit-form-section');
+    if (submitFormSection) {
+        submitFormSection.style.display = (plan !== 'free') ? 'block' : 'none';
+    }
+
+
     // Stats logic (Standardized fields)
     clipsCount.innerText = data.clipsExported || data.exportedClipsCount || 0;
     const uploadedCountEl = document.getElementById('clips-uploaded');
