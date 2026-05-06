@@ -199,14 +199,15 @@ async function loadPricing(user, userData) {
     }
 }
 
-// Change Plan Logic (Now points to WhatsApp)
+// Change Plan Logic (Now points to Email)
 window.changePlan = (planId) => {
-    const whatsappNumber = "+923165451573";
-    const message = encodeURIComponent(`Hi ProClip Studio! I would like to change my plan to the ${planId} plan. My email is ${auth.currentUser.email}.`);
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+    const emailAddress = "proclipstudio.contact@gmail.com";
+    const subject = encodeURIComponent(`Plan Upgrade Request: ${planId}`);
+    const body = encodeURIComponent(`Hi ProClip Studio!\n\nI would like to change my plan to the ${planId} plan. My email is ${auth.currentUser.email}.\n\nPlease let me know the next steps.`);
+    const mailtoUrl = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
 
-    alert(`To change or upgrade your plan, please contact our support team on WhatsApp. Opening chat...`);
-    window.open(whatsappUrl, '_blank');
+    alert(`To change or upgrade your plan, please contact our support team via email. Opening your email client...`);
+    window.location.href = mailtoUrl;
 };
 
 // Logout
@@ -215,3 +216,190 @@ document.getElementById('logout-btn').addEventListener('click', () => {
         window.location.href = 'auth.html';
     });
 });
+
+// --- Submit Form Logic ---
+const formUrlInput = document.getElementById('formUrl');
+const fetchFieldsBtn = document.getElementById('fetchFieldsBtn');
+const resetFormBtn = document.getElementById('resetFormBtn');
+const linksArea = document.getElementById('linksArea');
+const dynamicFieldsContainer = document.getElementById('dynamicFieldsContainer');
+const fetchStatus = document.getElementById('fetchStatus');
+const submitBtn = document.getElementById('submitBtn');
+const stopSubmitBtn = document.getElementById('stopSubmitBtn');
+const progressSection = document.getElementById('progressSection');
+const progressCount = document.getElementById('progressCount');
+const progressFill = document.getElementById('progressFill');
+const statusMessage = document.getElementById('statusMessage');
+
+let currentFields = [];
+let resolvedFormResponseUrl = "";
+let submissionInterrupt = false;
+
+if (fetchFieldsBtn) {
+    fetchFieldsBtn.addEventListener('click', async () => {
+        const url = formUrlInput.value.trim();
+        if (!url) {
+            fetchStatus.textContent = "⚠️ Please enter a Google Form URL.";
+            fetchStatus.style.color = "#ef4444";
+            return;
+        }
+
+        fetchFieldsBtn.disabled = true;
+        fetchFieldsBtn.textContent = "Fetching...";
+        fetchStatus.style.color = "var(--text-muted)";
+        fetchStatus.textContent = "⏳ Fetching form structure...";
+
+        try {
+            // Point to our Vercel Serverless Function
+            const response = await fetch(`/api/fetch-form?url=${encodeURIComponent(url)}`);
+            const data = await response.json();
+
+            if (!response.ok || data.error) {
+                throw new Error(data.error || `HTTP ${response.status}`);
+            }
+
+            if (!data.fields || data.fields.length === 0) {
+                fetchStatus.textContent = "⚠️ No fields found. Is this a public Google Form?";
+                fetchStatus.style.color = "#fbbf24";
+                return;
+            }
+
+            resolvedFormResponseUrl = data.formResponseUrl;
+
+            currentFields = data.fields.map((f, i) => ({
+                ...f,
+                value: "",
+                isRepeatable: (i === data.fields.length - 1)
+            }));
+
+            renderFields();
+            fetchStatus.style.color = "#22c55e";
+            fetchStatus.textContent = `✅ Found ${currentFields.length} field(s). Set static values below.`;
+        } catch (error) {
+            console.error(error);
+            fetchStatus.textContent = "❌ Error: " + error.message;
+            fetchStatus.style.color = "#ef4444";
+        } finally {
+            fetchFieldsBtn.disabled = false;
+            fetchFieldsBtn.textContent = "Fetch Fields";
+        }
+    });
+}
+
+if (resetFormBtn) {
+    resetFormBtn.addEventListener('click', () => {
+        if (confirm("Clear current form structure and values?")) {
+            currentFields = [];
+            resolvedFormResponseUrl = "";
+            if (formUrlInput) formUrlInput.value = "";
+            renderFields();
+            fetchStatus.textContent = "Form cleared.";
+            fetchStatus.style.color = "var(--text-muted)";
+        }
+    });
+}
+
+function renderFields() {
+    if (!dynamicFieldsContainer) return;
+    dynamicFieldsContainer.innerHTML = "";
+
+    if (currentFields.length === 0) {
+        dynamicFieldsContainer.innerHTML = '<p style="margin: 0; font-style: italic; color: var(--text-muted); font-size: 0.9rem;">Enter a Form URL and click Fetch to see fields.</p>';
+        return;
+    }
+
+    currentFields.forEach((field, index) => {
+        const div = document.createElement('div');
+        div.style.marginBottom = "15px";
+        div.style.padding = "10px";
+        div.style.background = "rgba(255,255,255,0.02)";
+        div.style.borderRadius = "8px";
+        div.style.border = field.isRepeatable ? "1px solid var(--primary)" : "1px solid transparent";
+
+        div.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-weight: 500; color: var(--text-light);">${field.label}</span>
+                <label style="cursor:pointer; user-select:none; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text-muted);">
+                    <input type="radio" name="repeatableField" value="${index}" ${field.isRepeatable ? 'checked' : ''} style="cursor:pointer;">
+                    Links go here
+                </label>
+            </div>
+            <input type="text" value="${field.value}" placeholder="Enter static value..." ${field.isRepeatable ? 'disabled' : ''} style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.05); color: #fff; box-sizing: border-box;">
+        `;
+
+        const textInput = div.querySelector('input[type="text"]');
+        textInput.addEventListener('input', (e) => {
+            currentFields[index].value = e.target.value;
+        });
+
+        const radio = div.querySelector('input[type="radio"]');
+        radio.addEventListener('change', () => {
+            if (radio.checked) {
+                currentFields.forEach((f, i) => f.isRepeatable = (i === index));
+                renderFields();
+            }
+        });
+
+        dynamicFieldsContainer.appendChild(div);
+    });
+}
+
+if (submitBtn) {
+    submitBtn.addEventListener('click', async () => {
+        const links = linksArea.value.split('\n').filter(l => l.trim().length > 0);
+        if (!links.length) return alert("No links to process.");
+        if (!resolvedFormResponseUrl) return alert("Please fetch form fields first.");
+
+        const repeatableField = currentFields.find(f => f.isRepeatable);
+        if (!repeatableField) return alert("Please select which field should receive the links.");
+
+        submissionInterrupt = false;
+        submitBtn.style.display = 'none';
+        if (stopSubmitBtn) stopSubmitBtn.style.display = 'inline-block';
+        if (progressSection) progressSection.style.display = 'block';
+
+        const total = links.length;
+        let successCount = 0;
+
+        for (let i = 0; i < total; i++) {
+            if (submissionInterrupt) break;
+
+            const currentLink = links[i];
+            statusMessage.textContent = `Submitting (${i + 1}/${total}): ${currentLink.substring(0, 30)}...`;
+
+            try {
+                const body = new URLSearchParams();
+                currentFields.forEach(f => {
+                    const value = f.isRepeatable ? currentLink : f.value;
+                    body.append(f.id, value);
+                });
+
+                await fetch(resolvedFormResponseUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: body.toString()
+                });
+                successCount++;
+            } catch (e) {
+                console.error("Submission failed", e);
+            }
+
+            const progress = Math.round(((i + 1) / total) * 100);
+            if (progressFill) progressFill.style.width = `${progress}%`;
+            if (progressCount) progressCount.textContent = `${i + 1}/${total}`;
+
+            if (i < total - 1) await new Promise(r => setTimeout(r, 2000));
+        }
+
+        statusMessage.textContent = submissionInterrupt ? 'Stopped.' : `Done! ${successCount} entries submitted.`;
+        submitBtn.style.display = 'inline-block';
+        if (stopSubmitBtn) stopSubmitBtn.style.display = 'none';
+    });
+}
+
+if (stopSubmitBtn) {
+    stopSubmitBtn.addEventListener('click', () => {
+        submissionInterrupt = true;
+    });
+}
