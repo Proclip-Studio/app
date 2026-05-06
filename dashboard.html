@@ -80,46 +80,7 @@
                     </div>
                 </section>
 
-                <section class="dashboard-section glass reveal active" id="submit-form-section" style="display: none;">
-                    <h3 class="section-title"><i class="fa-solid fa-file-lines"></i> Submit Form</h3>
-                    
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; color: var(--text-light); font-weight: 500;">Google Form URL</label>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="formUrl" placeholder="https://forms.gle/..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.05); color: #fff;">
-                            <button id="fetchFieldsBtn" class="btn btn-secondary" style="white-space: nowrap;">Fetch Fields</button>
-                            <button id="resetFormBtn" class="btn btn-secondary" style="background: transparent; border: 1px solid var(--border-color);">Reset</button>
-                        </div>
-                        <p id="fetchStatus" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; min-height: 20px;"></p>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <label style="color: var(--text-light); font-weight: 500;">Video Links (Paste from Sheet)</label>
-                        </div>
-                        <textarea id="linksArea" placeholder="Paste your links here (one per line)..." style="width: 100%; height: 120px; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.05); color: #fff; resize: vertical; box-sizing: border-box;"></textarea>
-                    </div>
-
-                    <div id="dynamicFieldsContainer" style="margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid var(--border-color);">
-                        <p style="margin: 0; font-style: italic; color: var(--text-muted); font-size: 0.9rem;">Enter a Form URL and click Fetch to see fields.</p>
-                    </div>
-
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button id="submitBtn" class="btn btn-primary">Start Bulk Submission</button>
-                        <button id="stopSubmitBtn" class="btn btn-secondary" style="display:none; background: #ef4444; border-color: #ef4444;">Stop</button>
-                    </div>
-
-                    <div id="progressSection" style="display:none; margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
-                            <span>Progress</span>
-                            <span id="progressCount">0/0</span>
-                        </div>
-                        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-                            <div id="progressFill" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
-                        </div>
-                        <div id="statusMessage" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Ready</div>
-                    </div>
-                </section>
+                <div id="submit-form-container"></div>
 
                 <section class="dashboard-section glass reveal active">
                     <h3 class="section-title"><i class="fa-solid fa-circle-info"></i> Account Status</h3>
