@@ -205,9 +205,8 @@ function applyUserData(data, user) {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         expiryDays.innerText = diffDays > 0 ? diffDays : "0";
         statusText.innerText = `Your ${plan} subscription is active until ${endDate.toLocaleDateString()}.`;
-    } else {
         expiryDays.innerText = "∞";
-        statusText.innerText = plan === 'free' ? "You are on the Free plan. Upgrade to unlock more features." : "Your subscription status is active.";
+        statusText.innerText = plan === 'free' ? "You are on the Free plan. Contact proclipstudio.contact@gmail.com to upgrade." : "Your subscription status is active.";
     }
 }
 
@@ -233,17 +232,20 @@ async function loadPricing(user, userData) {
 
             const currentPlan = resolvePlan(userData);
 
-            pricingContainer.innerHTML = plans.map(plan => `
-                <div class="pricing-card ${plan.id === currentPlan ? 'active' : ''}">
-                    <div class="plan-name">${plan.name}</div>
-                    <div class="plan-price">${currency} ${plan.price.toLocaleString()}<span>${plan.period}</span></div>
-                    <button class="btn ${plan.id === currentPlan ? 'btn-secondary' : 'btn-primary'} plan-btn" 
-                            onclick="window.changePlan('${plan.id}')"
-                            ${plan.id === currentPlan ? 'disabled' : ''}>
-                        ${plan.id === currentPlan ? 'Current Plan' : 'Contact to Upgrade'}
-                    </button>
+            pricingContainer.innerHTML = `
+                <div style="grid-column: 1 / -1; background: rgba(0, 229, 255, 0.05); border: 1px dashed var(--primary); padding: 30px; border-radius: 12px; text-align: center;">
+                    <h4 style="color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;">Ready to Upgrade?</h4>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">To upgrade your plan and unlock premium features, please contact our support team directly via email.</p>
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; display: inline-block; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                        <span style="color: var(--text-light); font-weight: 600; font-size: 1.1rem;">proclipstudio.contact@gmail.com</span>
+                    </div>
+                    <div>
+                        <a href="mailto:proclipstudio.contact@gmail.com?subject=Plan%20Upgrade%20Request&body=Hi%20ProClip%20Studio!%0D%0A%0D%0AI%20would%20like%20to%20upgrade%20my%20plan.%20My%20email%20is%20${auth.currentUser.email}.%0D%0A%0D%0APlease%20let%20me%20know%20the%20next%20steps." class="btn btn-primary">
+                            <i class="fa-solid fa-envelope"></i> Send Email Now
+                        </a>
+                    </div>
                 </div>
-            `).join('');
+            `;
         } else {
             pricingContainer.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">Pricing information unavailable.</div>';
         }
@@ -253,18 +255,6 @@ async function loadPricing(user, userData) {
     }
 }
 
-// Change Plan Logic (Now points to Email)
-window.changePlan = (planId) => {
-    const emailAddress = "proclipstudio.contact@gmail.com";
-    const subject = encodeURIComponent(`Plan Upgrade Request: ${planId}`);
-    const body = encodeURIComponent(`Hi ProClip Studio!\n\nI would like to change my plan to the ${planId} plan. My email is ${auth.currentUser.email}.\n\nPlease let me know the next steps.`);
-    const mailtoUrl = `mailto:${emailAddress}?subject=${subject}&body=${body}`;
-
-    alert(`To change or upgrade your plan, please contact our support team via email. Opening your email client...`);
-    window.location.href = mailtoUrl;
-};
-
-// Logout
 // Logout
 document.getElementById('logout-btn').addEventListener('click', () => {
     signOut(auth).then(() => {
